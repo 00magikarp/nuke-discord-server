@@ -40,8 +40,8 @@ async def echo(interaction: discord.Interaction, message: str) -> None:
 )
 async def ping(interaction: discord.Interaction) -> None:
     await interaction.response.send_message(
-f"""🏓 Pong!
-{bot.latency*1000:.0f}ms"""
+        f"""🏓 Pong!
+{bot.latency * 1000:.0f}ms"""
     )
 
 
@@ -53,6 +53,21 @@ f"""🏓 Pong!
 async def delete_all_channels(interaction: discord.Interaction) -> None:
     for channel in interaction.guild.channels:
         await channel.delete()
+
+    await interaction.response.send_message("💥", ephemeral=True)
+
+
+@bot.tree.command(
+    name="delete_all_roles",
+    description="Delete all the roles in this server",
+    guild=testGuild
+)
+async def delete_all_channels(interaction: discord.Interaction) -> None:
+    print([role.name for role in interaction.guild.roles])
+    for role in interaction.guild.roles:
+        if role.name == "Nuker Bot" or role.name == "@everyone":
+            continue
+        await role.delete()
 
     await interaction.response.send_message("💥", ephemeral=True)
 
