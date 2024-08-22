@@ -1,6 +1,7 @@
 import os
 import dotenv
 import discord
+from discord.app_commands.errors import CommandInvokeError
 from discord.ext import commands
 
 dotenv.load_dotenv()
@@ -43,5 +44,27 @@ async def ping(interaction: discord.Interaction) -> None:
 f"""🏓 Pong!
 {bot.latency*1000:.0f}ms"""
     )
+
+
+@bot.tree.command(
+    name="delete_all_channels",
+    description="Delete all the channels in this server",
+    guild=testGuild
+)
+async def delete_all_channels(interaction: discord.Interaction) -> None:
+    real_channels = []
+
+    for channel in interaction.guild.channels:
+        try:
+            channel.channels
+            # If this doesn't raise an Exception, it's a category and isn't added to the list
+        except:
+            real_channels.append(channel)
+
+    print([(channel.name, channel.id) for channel in real_channels])
+    await interaction.response.send_message(str([
+        channel.name for channels in real_channels
+    ]))
+
 
 bot.run(BOT_TOKEN)
