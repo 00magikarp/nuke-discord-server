@@ -1,7 +1,6 @@
 import os
 import dotenv
 import discord
-from discord.app_commands.errors import CommandInvokeError
 from discord.ext import commands
 
 dotenv.load_dotenv()
@@ -63,7 +62,7 @@ async def delete_all_channels(interaction: discord.Interaction) -> None:
 
     print([(channel.name, channel.id) for channel in real_channels])
     await interaction.response.send_message(str([
-        channel.name for channels in real_channels
+        channel.name for channel in real_channels
     ]))
 
 
