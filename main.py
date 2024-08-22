@@ -54,9 +54,5 @@ async def delete_all_channels(interaction: discord.Interaction) -> None:
     for channel in interaction.guild.channels:
         await channel.delete()
 
-    await interaction.response.send_message(str([
-        channel.name for channel in interaction.guild.channels
-    ]))
-
 
 bot.run(BOT_TOKEN)
