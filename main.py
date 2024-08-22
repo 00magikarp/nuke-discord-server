@@ -51,18 +51,11 @@ f"""🏓 Pong!
     guild=testGuild
 )
 async def delete_all_channels(interaction: discord.Interaction) -> None:
-    real_channels = []
-
     for channel in interaction.guild.channels:
-        try:
-            channel.channels
-            # If this doesn't raise an Exception, it's a category and isn't added to the list
-        except:
-            real_channels.append(channel)
+        await channel.delete()
 
-    print([(channel.name, channel.id) for channel in real_channels])
     await interaction.response.send_message(str([
-        channel.name for channel in real_channels
+        channel.name for channel in interaction.guild.channels
     ]))
 
 
