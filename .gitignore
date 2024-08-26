@@ -1,2 +1,2 @@
 *.env
-register_command.py
+*.log
