@@ -29,6 +29,16 @@ async def on_ready() -> None:
     print(log_text)
 
 
+@bot.event
+async def on_app_command_completion(interaction: discord.Interaction, command: discord.app_commands.Command) -> None:
+    server = interaction.guild.name
+    user = interaction.user
+
+    log_text = f"[[{user}]] RAN [[{command.name}]] IN [[{server}]]"
+    logger.info(log_text)
+    print(log_text)
+
+
 async def load_extensions():
     for filename in os.listdir("./cogs"):
         if filename.endswith(".py"):
