@@ -104,7 +104,5 @@ class NukeCommands(commands.GroupCog, name="nuke", description="Nuke commands"):
                 await user.ban()
 
 
-
-
 async def setup(bot):
     await bot.add_cog(NukeCommands(bot))

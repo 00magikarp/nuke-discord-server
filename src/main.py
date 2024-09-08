@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import enum
 import os
 
 import discord
@@ -19,6 +20,60 @@ bot = commands.Bot(command_prefix="$", intents=discord.Intents.all())
 testGuild = discord.Object(id=os.getenv('TEST_GUILD'))  # for testing
 
 
+class LoggerModes(enum.Enum):
+    """
+    Custom class to pass enum members into the :func:`log` function.
+
+    Options for the mode are:
+        :attr:`LoggerModes.INFO`
+
+        :attr:`LoggerModes.WARNING`
+
+        :attr:`LoggerModes.DEBUG`
+    """
+    INFO = 1
+    WARNING = 2
+    DEBUG = 3
+
+
+def log(text: str, logger_mode: LoggerModes) -> None:
+    """
+    \"Custom\" Logger
+    Prints to console and calls `logger.info`
+
+    :param text: The text to be logged
+    :param logger_mode: The mode of logging, from the enum object :class:`LoggerModes`
+    """
+
+    match logger_mode:
+        case logger_mode.INFO:
+            logger.info(text)
+        case logger_mode.WARNING:
+            logger.warning(text)
+        case logger_mode.DEBUG:
+            logger.debug(text)
+        case _:
+            logger.warning(f"Attempt to log [[{text}]] failed; defaulted to warning log")
+
+    print(text)
+    return
+
+
+async def load_extensions():
+    for filename in os.listdir("./cogs"):
+        if filename.endswith(".py"):
+            await bot.load_extension(f"cogs.{filename[:-3]}")
+            log(f"Loaded cog.{filename}", LoggerModes.INFO)
+
+
+@bot.event
+async def on_app_command_completion(interaction: discord.Interaction, command: discord.app_commands.Command) -> None:
+    server = interaction.guild.name
+    user = interaction.user
+
+    log(f"[[{user}]] RAN [[{command.name}]] IN [[{server}]]", LoggerModes.INFO)
+
+
 @bot.event
 async def on_ready() -> None:
     await bot.wait_until_ready()
@@ -27,26 +82,6 @@ async def on_ready() -> None:
     log_text = f"Logged in as: {bot.user}"
     logger.info(log_text)
     print(log_text)
-
-
-@bot.event
-async def on_app_command_completion(interaction: discord.Interaction, command: discord.app_commands.Command) -> None:
-    server = interaction.guild.name
-    user = interaction.user
-
-    log_text = f"[[{user}]] RAN [[{command.name}]] IN [[{server}]]"
-    logger.info(log_text)
-    print(log_text)
-
-
-async def load_extensions():
-    for filename in os.listdir("./cogs"):
-        if filename.endswith(".py"):
-            await bot.load_extension(f"cogs.{filename[:-3]}")
-            log_text = f"Loaded {filename}"
-
-            logger.info(log_text)
-            print(log_text)
 
 
 async def main():
