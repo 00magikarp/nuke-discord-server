@@ -56,10 +56,13 @@ class UtilityCommands(commands.Cog):
         Purge the last `messagesToDelete` commands in the channel
 
         :param interaction: The interaction object.
-        :param number: Amount of messages to remove from the channel.
+        :param number: Amount of messages to remove from the channel. Maximum is 100.
         """
         if not await self.check_admin(interaction):
             return
+
+        if number > 100:
+            number = 100
 
         await interaction.response.send_message("💥", ephemeral=True)
         await interaction.channel.purge(limit=number)

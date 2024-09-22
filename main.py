@@ -9,7 +9,7 @@ from discord.ext import commands
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='../discord.log', encoding='utf-8', mode='w')
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter('[%(asctime)s] %(levelname)s: %(name)s: %(message)s'))
 logger.addHandler(handler)
 
@@ -61,7 +61,7 @@ def log(text: str, logger_mode: LoggerModes) -> None:
 
 async def load_extensions():
     for filename in os.listdir("./cogs"):
-        if filename.endswith(".py"):
+        if filename.endswith(".py") and filename.endswith("Commands.py"):
             await bot.load_extension(f"cogs.{filename[:-3]}")
             log(f"Loaded cog.{filename}", LoggerModes.INFO)
 

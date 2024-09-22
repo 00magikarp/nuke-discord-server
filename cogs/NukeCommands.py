@@ -3,6 +3,8 @@ import dotenv
 import discord
 from discord.ext import commands
 
+from extras.ConfirmDenyButtons import ConfirmDenyButtons
+
 dotenv.load_dotenv()
 TEST_GUILD_ID = os.getenv('TEST_GUILD')
 testGuild = discord.Object(id=TEST_GUILD_ID)
@@ -41,11 +43,18 @@ class NukeCommands(commands.GroupCog, name="nuke", description="Nuke commands"):
         if not await self.check_admin(interaction):
             return
 
+        choices = ConfirmDenyButtons()
+        await interaction.channel.send(embed=discord.Embed(title="Nuke channels?"), content="", view=choices)
+        await choices.wait()
+
+        if not choices.response:
+            return
+
         for channel in interaction.guild.channels:
             try:
                 await channel.delete()
-            except Exception as e:
-                print(e)
+            except:
+                continue
 
     @discord.app_commands.command(
         name="roles",
@@ -53,6 +62,13 @@ class NukeCommands(commands.GroupCog, name="nuke", description="Nuke commands"):
     )
     async def roles(self, interaction: discord.Interaction) -> None:
         if not await self.check_admin(interaction):
+            return
+
+        choices = ConfirmDenyButtons()
+        await interaction.channel.send(embed=discord.Embed(title="Nuke roles?"), content="", view=choices)
+        await choices.wait()
+
+        if not choices.response:
             return
 
         for role in interaction.guild.roles:
@@ -70,6 +86,13 @@ class NukeCommands(commands.GroupCog, name="nuke", description="Nuke commands"):
     )
     async def users(self, interaction: discord.Interaction) -> None:
         if not await self.check_admin(interaction):
+            return
+
+        choices = ConfirmDenyButtons()
+        await interaction.channel.send(embed=discord.Embed(title="Nuke users?"), content="", view=choices)
+        await choices.wait()
+
+        if not choices.response:
             return
 
         for user in interaction.guild.members:
