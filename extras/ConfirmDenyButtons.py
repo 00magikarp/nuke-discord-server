@@ -16,16 +16,24 @@ class ConfirmDenyButtons(discord.ui.View):
         label="Confirm",
         style=discord.ButtonStyle.green
     )
-    async def confirm_button(self, button: discord.ui.Button, interaction: discord.Interaction) -> None:
-        button.disabled = True
+    async def confirm_button(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         self.response = True
+
+        for child in self.children:
+            child.disabled = True
+
+        await interaction.response.edit_message(view=self)
         self.stop()
 
     @discord.ui.button(
         label="Nevermind",
         style=discord.ButtonStyle.red
     )
-    async def confirm_button(self, button: discord.ui.Button, interaction: discord.Interaction) -> None:
-        button.disabled = True
+    async def deny_button(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         self.response = False
+
+        for child in self.children:
+            child.disabled = True
+
+        await interaction.response.edit_message(view=self)
         self.stop()

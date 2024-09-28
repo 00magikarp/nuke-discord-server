@@ -25,11 +25,10 @@ class LoggerModes(enum.Enum):
     Custom class to pass enum members into the :func:`log` function.
 
     Options for the mode are:
-        :attr:`LoggerModes.INFO`
 
-        :attr:`LoggerModes.WARNING`
-
-        :attr:`LoggerModes.DEBUG`
+    - :attr:`LoggerModes.INFO`
+    - :attr:`LoggerModes.WARNING`
+    - :attr:`LoggerModes.DEBUG`
     """
     INFO = 1
     WARNING = 2
@@ -39,6 +38,7 @@ class LoggerModes(enum.Enum):
 def log(text: str, logger_mode: LoggerModes) -> None:
     """
     \"Custom\" Logger
+
     Prints to console and calls `logger.info`
 
     :param text: The text to be logged
@@ -53,7 +53,8 @@ def log(text: str, logger_mode: LoggerModes) -> None:
         case logger_mode.DEBUG:
             logger.debug(text)
         case _:
-            logger.warning(f"Attempt to log [[{text}]] failed; defaulted to warning log")
+            logger.warning(f"ATTEMPT TO LOG FAILED. DEFAULTED TO WARNING.")
+            logger.warning(text)
 
     print(text)
     return
@@ -77,7 +78,7 @@ async def on_app_command_completion(interaction: discord.Interaction, command: d
 @bot.event
 async def on_ready() -> None:
     await bot.wait_until_ready()
-    await bot.tree.sync()
+    await bot.tree.sync(guild=testGuild)
 
     log_text = f"Logged in as: {bot.user}"
     logger.info(log_text)

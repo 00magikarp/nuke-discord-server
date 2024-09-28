@@ -17,7 +17,7 @@ class NukeCommands(commands.GroupCog, name="nuke", description="Nuke commands"):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.bot.tree.sync()
+        await self.bot.tree.sync(guild=testGuild)
 
     @staticmethod
     async def check_admin(interaction: discord.Interaction) -> bool:
@@ -44,16 +44,21 @@ class NukeCommands(commands.GroupCog, name="nuke", description="Nuke commands"):
             return
 
         choices = ConfirmDenyButtons()
-        await interaction.channel.send(embed=discord.Embed(title="Nuke channels?"), content="", view=choices)
+        await interaction.response.send_message(
+            embed=discord.Embed(title="Nuke channels?", color=discord.Color.red()),
+            content="",
+            view=choices
+        )
         await choices.wait()
 
         if not choices.response:
+            await interaction.followup.send("Canceled")
             return
 
         for channel in interaction.guild.channels:
             try:
                 await channel.delete()
-            except:
+            except (discord.Forbidden, discord.NotFound, discord.HTTPException):
                 continue
 
     @discord.app_commands.command(
@@ -65,20 +70,25 @@ class NukeCommands(commands.GroupCog, name="nuke", description="Nuke commands"):
             return
 
         choices = ConfirmDenyButtons()
-        await interaction.channel.send(embed=discord.Embed(title="Nuke roles?"), content="", view=choices)
+        await interaction.response.send_message(
+            embed=discord.Embed(title="Nuke roles?", color=discord.Color.red()),
+            content="",
+            view=choices
+        )
         await choices.wait()
 
         if not choices.response:
+            await interaction.followup.send("Canceled")
             return
 
         for role in interaction.guild.roles:
             if not (role.permissions.administrator or role.name == "@everyone"):
                 try:
                     await role.delete()
-                except Exception as e:
-                    print(e)
+                except (discord.Forbidden, discord.HTTPException):
+                    continue
 
-        await interaction.response.send_message("💥", ephemeral=True)
+        await interaction.followup.send("💥", ephemeral=True)
 
     @discord.app_commands.command(
         name="users",
@@ -89,17 +99,22 @@ class NukeCommands(commands.GroupCog, name="nuke", description="Nuke commands"):
             return
 
         choices = ConfirmDenyButtons()
-        await interaction.channel.send(embed=discord.Embed(title="Nuke users?"), content="", view=choices)
+        await interaction.response.send_message(
+            embed=discord.Embed(title="Nuke users?", color=discord.Color.red()),
+            content="",
+            view=choices
+        )
         await choices.wait()
 
         if not choices.response:
+            await interaction.followup.send("Canceled")
             return
 
         for user in interaction.guild.members:
             if not user.guild_permissions.administrator:
                 await user.ban()
 
-        await interaction.response.send_message("💥", ephemeral=True)
+        await interaction.followup.send("💥", ephemeral=True)
 
     @discord.app_commands.command(
         name="all",
@@ -107,6 +122,18 @@ class NukeCommands(commands.GroupCog, name="nuke", description="Nuke commands"):
     )
     async def all(self, interaction: discord.Interaction) -> None:
         if not await self.check_admin(interaction):
+            return
+
+        choices = ConfirmDenyButtons()
+        await interaction.response.send_message(
+            embed=discord.Embed(title="Nuke everything?", color=discord.Color.red()),
+            content="",
+            view=choices
+        )
+        await choices.wait()
+
+        if not choices.response:
+            await interaction.followup.send("Canceled")
             return
 
         for channel in interaction.guild.channels:
