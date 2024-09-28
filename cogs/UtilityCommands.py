@@ -3,6 +3,8 @@ import dotenv
 import discord
 from discord.ext import commands
 
+from extras.CheckAdmin import check_admin
+
 dotenv.load_dotenv()
 TEST_GUILD_ID = os.getenv('TEST_GUILD')
 testGuild = discord.Object(id=TEST_GUILD_ID)
@@ -15,22 +17,6 @@ class UtilityCommands(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         await self.bot.tree.sync()
-
-    @staticmethod
-    async def check_admin(interaction: discord.Interaction) -> bool:
-        """
-        Check if the author of the command as administrator permissions in the guild,
-        and sends an ephemeral message if they don't.
-
-        :param interaction: The current discord.Interaction
-        :return: True if the author has admin
-        """
-
-        if not interaction.permissions.administrator:
-            await interaction.response.send_message("Hey! You can't run this command...", ephemeral=True)
-            return False
-
-        return True
 
     @discord.app_commands.command(
         name="ping",
@@ -58,7 +44,7 @@ class UtilityCommands(commands.Cog):
         :param interaction: The interaction object.
         :param number: Amount of messages to remove from the channel. Maximum is 100.
         """
-        if not await self.check_admin(interaction):
+        if not await check_admin(interaction):
             return
 
         if number > 100:

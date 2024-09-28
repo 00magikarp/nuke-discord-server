@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 
 from extras.ConfirmDenyButtons import ConfirmDenyButtons
+from extras.CheckAdmin import check_admin
 
 dotenv.load_dotenv()
 TEST_GUILD_ID = os.getenv('TEST_GUILD')
@@ -19,28 +20,12 @@ class NukeCommands(commands.GroupCog, name="nuke", description="Nuke commands"):
     async def on_ready(self):
         await self.bot.tree.sync(guild=testGuild)
 
-    @staticmethod
-    async def check_admin(interaction: discord.Interaction) -> bool:
-        """
-        Check if the author of the command as administrator permissions in the guild,
-        and sends an ephemeral message if they don't.
-
-        :param interaction: The current discord.Interaction
-        :return: True if the author has admin
-        """
-
-        if not interaction.permissions.administrator:
-            await interaction.response.send_message("Hey! You can't run this command...", ephemeral=True)
-            return False
-
-        return True
-
     @discord.app_commands.command(
         name="channels",
         description="Nuke all channels"
     )
     async def channels(self, interaction: discord.Interaction) -> None:
-        if not await self.check_admin(interaction):
+        if not await check_admin(interaction):
             return
 
         choices = ConfirmDenyButtons()
@@ -66,7 +51,7 @@ class NukeCommands(commands.GroupCog, name="nuke", description="Nuke commands"):
         description="Nuke all roles"
     )
     async def roles(self, interaction: discord.Interaction) -> None:
-        if not await self.check_admin(interaction):
+        if not await check_admin(interaction):
             return
 
         choices = ConfirmDenyButtons()
@@ -95,7 +80,7 @@ class NukeCommands(commands.GroupCog, name="nuke", description="Nuke commands"):
         description="Nuke all users"
     )
     async def users(self, interaction: discord.Interaction) -> None:
-        if not await self.check_admin(interaction):
+        if not await check_admin(interaction):
             return
 
         choices = ConfirmDenyButtons()
@@ -121,7 +106,7 @@ class NukeCommands(commands.GroupCog, name="nuke", description="Nuke commands"):
         description="Nuke EVERYTHING! (channels, roles, users; this is not a joke!)"
     )
     async def all(self, interaction: discord.Interaction) -> None:
-        if not await self.check_admin(interaction):
+        if not await check_admin(interaction):
             return
 
         choices = ConfirmDenyButtons()

@@ -37,7 +37,6 @@ async def on_ready() -> None:
 
     log_text = f"Logged in as: {bot.user}"
     logger.log(log_text, logger.LoggerModes.INFO)
-    print(log_text)
 
 
 async def main():

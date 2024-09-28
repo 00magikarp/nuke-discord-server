@@ -30,7 +30,7 @@ class CustomLogger:
         """
         \"Custom\" Logger
 
-        Prints to console and calls `logger.info`
+        Prints to console and outputs to logger
 
         :param text: The text to be logged
         :param logger_mode: The mode of logging, from the enum object :class:`LoggerModes`
