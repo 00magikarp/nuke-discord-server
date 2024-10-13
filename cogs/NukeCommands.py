@@ -18,7 +18,7 @@ class NukeCommands(commands.GroupCog, name="nuke", description="Nuke commands"):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.bot.tree.sync(guild=testGuild)
+        await self.bot.tree.sync()
 
     @discord.app_commands.command(
         name="channels",

@@ -33,7 +33,7 @@ async def on_app_command_completion(interaction: discord.Interaction, command: d
 @bot.event
 async def on_ready() -> None:
     await bot.wait_until_ready()
-    await bot.tree.sync(guild=testGuild)
+    await bot.tree.sync()
 
     log_text = f"Logged in as: {bot.user}"
     logger.log(log_text, logger.LoggerModes.INFO)
