@@ -39,12 +39,12 @@ class UtilityCommands(commands.Cog):
         )
 
     @discord.app_commands.command(
-        name="purge",
-        description="Purge the last number commands in the channel",
+        name="purge_channel",
+        description="Purge the last number messages in this channel",
     )
-    async def purge(self, interaction: discord.Interaction, number: int) -> None:
+    async def purge_channel(self, interaction: discord.Interaction, number: int) -> None:
         """
-        Purge the last `messagesToDelete` commands in the channel
+        Purge the last `messagesToDelete` messages in the channel
 
         :param interaction: The interaction object.
         :param number: Amount of messages to remove from the channel. Maximum is 250.
@@ -57,6 +57,27 @@ class UtilityCommands(commands.Cog):
 
         await interaction.response.send_message("💥", ephemeral=True)
         await interaction.channel.purge(limit=number)
+
+    @discord.app_commands.command(
+        name="purge_user",
+        description="Purge the last number messages by a user in this channel"
+    )
+    async def purge_user(self, interaction: discord.Interaction, user: discord.Member, number: int) -> None:
+        """
+        Purge the last `messagesToDelete` messages by the user. Only works in channel it's ran in.
+
+        :param interaction: The interaction object.
+        :param user: User to purge messages by.
+        :param number: Amount of messages to remove from the channel. Maximum is 250.
+        """
+        if not await check_admin(interaction):
+            return
+
+        if number > 250:
+            number = 250
+
+        await interaction.response.send_message("💥", ephemeral=True)
+        await interaction.channel.purge(limit=number, check=lambda m: m.author.id == user.id)
 
     @discord.app_commands.command(
         name="lockdown",
